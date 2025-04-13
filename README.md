@@ -87,7 +87,7 @@ python main.py
   <li>Open a new terminal (or use a different machine) and navigate to the project directory.</li>
   <li>Run the client GUI with:
     <pre>
-python clientGUI.py
+python client.py
     </pre>
   </li>
   <li>Upon launch, a login screen appears. Enter your username to start chatting.</li>
