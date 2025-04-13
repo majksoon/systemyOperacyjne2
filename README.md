@@ -1,123 +1,124 @@
-Dining Philosophers Problem - projekt 1
+<!-- Dining Philosophers Project -->
+<h1 style="font-size:2em; font-weight:bold;">Dining Philosophers Problem - Project 1</h1>
 
-This project implements a classical concurrency problem known as the Dining Philosophers Problem using C++11 with std::thread and custom synchronization mechanisms.
-The purpose of this exercise is to demonstrate thread creation, handling critical sections, and preventing deadlocks without using any ready-made synchronization modules (e.g., std::mutex).
-Each philosopher (thread) alternates between thinking and eating, while competing for access to shared resources (forks).
-The program guarantees that no deadlock occurs by enforcing a locking order on the forks.
+<h2 style="font-size:1.5em; font-weight:bold;">Project Description</h2>
+<p>This project implements the classical concurrency problem <strong>Dining Philosophers Problem</strong> using C++11 with <code>std::thread</code> and custom synchronization mechanisms. The exercise demonstrates:</p>
+<ul>
+  <li><strong>Thread creation</strong></li>
+  <li><strong>Handling critical sections</strong></li>
+  <li><strong>Preventing deadlocks</strong> without using ready-made synchronization modules (e.g., <code>std::mutex</code>).</li>
+</ul>
+<p>Each philosopher (thread) alternates between thinking and eating, while competing for shared resources (forks). To avoid deadlock, a locking order is enforced on the forks (always acquire the lower-indexed fork first).</p>
 
-
-
-Compilation and Execution:
-Requirements:
-Compiler supporting C++11 (e.g., g++, clang++) – only if you want to compile the source manually
-Or just use the provided filozofowie.exe on Windows
-
-Option 1 – Using Provided Executable which should work (Windows only)
-filozofowie.exe <number_of_philosophers>
-
-Option 2 – Manual Compilation
+<h2 style="font-size:1.5em; font-weight:bold;">Compilation and Execution</h2>
+<p>
+  <strong>Requirements:</strong> Compiler supporting C++11 (e.g., <code>g++</code>, <code>clang++</code>). You can compile the source manually or use the provided executable (<code>filozofowie.exe</code>) on Windows.
+</p>
+<p><strong>Option 1</strong> – Using Provided Executable (Windows only):</p>
+<pre>
+filozofowie.exe &lt;number_of_philosophers&gt;
+</pre>
+<p><strong>Option 2</strong> – Manual Compilation:</p>
+<pre>
 g++ -std=c++11 -pthread -o filozofowie filozofowie.cpp
-./filozofowie <number_of_philosophers>
+./filozofowie &lt;number_of_philosophers&gt;
+</pre>
 
+<h2 style="font-size:1.5em; font-weight:bold;">Problem Description</h2>
+<p>In the Dining Philosophers Problem, <strong>n philosophers</strong> sit around a round table with one fork between each pair. To eat, a philosopher needs both the fork on their left and the fork on their right. Philosophers alternate between thinking and eating and must never deadlock by waiting indefinitely for forks.</p>
 
-Problem Description
-In the Dining Philosophers Problem, n philosophers sit around a round table with one fork placed between each pair.
-To eat, a philosopher needs two forks — the one on their left and the one on their right.
-Philosophers alternate between thinking and eating, and must never deadlock by indefinitely waiting for forks.
+<h2 style="font-size:1.5em; font-weight:bold;">Threads and Their Roles</h2>
+<ul>
+  <li><strong>Philosopher Threads:</strong> Each philosopher runs in its own thread and continuously:
+    <ul>
+      <li>Thinks (simulated with a random delay),</li>
+      <li>Acquires both forks using custom spinlocks,</li>
+      <li>Eats (simulated with another delay), and</li>
+      <li>Releases the forks.</li>
+    </ul>
+  </li>
+  <li><strong>Console Output:</strong> A separate global <code>SpinLock</code> is used to protect <code>std::cout</code> output from concurrent access.</li>
+</ul>
 
+<h2 style="font-size:1.5em; font-weight:bold;">Critical Sections and Their Handling</h2>
+<ul>
+  <li><strong>Fork Acquisition:</strong>
+    <ul>
+      <li><em>Shared Resource:</em> The forks, protected by custom spinlocks.</li>
+      <li><em>Solution:</em> Philosophers always acquire the lower-indexed fork first (e.g., <code>if (leftFork > rightFork) { swap(leftFork, rightFork); }</code>).</li>
+    </ul>
+  </li>
+  <li><strong>Console Output:</strong>
+    <ul>
+      <li><em>Critical Section:</em> Writing to <code>std::cout</code> is synchronized.</li>
+      <li><em>Solution:</em> A global <code>SpinLock</code> (<code>coutLock</code>) and a <code>ScopedLock</code> wrapper (using RAII) prevent message interleaving.</li>
+    </ul>
+  </li>
+</ul>
 
-Threads and Their Roles
-The program creates n threads, one for each philosopher.
-Each thread runs a loop where the philosopher:
-Thinks (simulated with a random delay).
-Tries to acquire both forks (using custom spinlocks).
-Eats (simulated with another delay).
-Releases both forks.
-A separate global SpinLock is used to protect std::cout output from concurrent access.
+<hr>
 
+<!-- Chat Project -->
+<h1 style="font-size:2em; font-weight:bold;">Chat Project – Operating Systems 2</h1>
 
-Critical Sections and Their Handling
-1. Fork Acquisition
-Shared resources (forks) are protected using a custom SpinLock implementation.
-Each fork is an instance of SpinLock, stored in a vector.
-To avoid deadlock, philosophers always acquire the lower-indexed fork first:
+<h2 style="font-size:1.5em; font-weight:bold;">Project Description</h2>
+<p>This project implements a chat application that allows multiple clients to communicate simultaneously. The system consists of the following modules:</p>
+<ul>
+  <li><strong>server.py:</strong> Handles incoming connections, message reception, and broadcasting messages to all connected clients.</li>
+  <li><strong>client.py:</strong> Connects to the server and manages sending/receiving messages.</li>
+  <li><strong>clientGUI.py:</strong> Provides a graphical user interface (using Tkinter) for user login and communication.</li>
+  <li><strong>main.py:</strong> The entry point that starts the server.</li>
+</ul>
+<p>The project is written in Python and uses multi-threading and synchronization mechanisms to ensure correct handling of simultaneous connections.</p>
 
-if (leftFork > rightFork) {
-    swap(leftFork, rightFork);
-}
-
-2. Console Output
-Writing to the console (std::cout) is a critical section.
-A global SpinLock named coutLock ensures that messages from different threads do not interleave.
-Protected using a ScopedLock wrapper for RAII-style lock management.
-
-
-
-
-
-Projekt Chat – Systemy Operacyjne 2
-Opis projektu
-Projekt polega na stworzeniu aplikacji czatu umożliwiającej komunikację między wieloma klientami. System składa się z następujących modułów:
-
-server.py – serwer obsługujący połączenia, odbieranie wiadomości oraz rozsyłanie ich do wszystkich klientów.
-
-client.py – klient łączący się z serwerem, odpowiedzialny za wysyłanie i odbieranie wiadomości.
-
-clientGUI.py – graficzny interfejs użytkownika (Tkinter) umożliwiający logowanie oraz komunikację.
-
-main.py – punkt wejścia, który uruchamia serwer.
-
-Projekt realizowany jest w języku Python z wykorzystaniem wielowątkowości i mechanizmów synchronizacji w celu zapewnienia poprawnej współpracy przy równoczesnych połączeniach.
-
-Instrukcje uruchomienia
-Uruchomienie serwera
-Otwórz terminal i przejdź do katalogu projektu.
-
-Uruchom serwer poleceniem:
+<h2 style="font-size:1.5em; font-weight:bold;">Execution Instructions</h2>
+<p><strong>Server Execution:</strong></p>
+<ol>
+  <li>Open a terminal and navigate to the project directory.</li>
+  <li>Run the server with:
+    <pre>
 python main.py
+    </pre>
+    The server listens for connections on port <strong>5050</strong>.
+  </li>
+</ol>
+<p><strong>Client Execution:</strong></p>
+<ol>
+  <li>Open a new terminal (or use a different machine) and navigate to the project directory.</li>
+  <li>Run the client GUI with:
+    <pre>
+python clientGUI.py
+    </pre>
+  </li>
+  <li>Upon launch, a login screen appears. Enter your username to start chatting.</li>
+</ol>
 
+<h2 style="font-size:1.5em; font-weight:bold;">Problem Description</h2>
+<p>The chat application addresses the classic inter-process communication challenge in a multi-threaded environment. The main issues include:</p>
+<ul>
+  <li><strong>Synchronizing access to shared resources:</strong> Ensuring data consistency for the list of active clients and the chat history.</li>
+  <li><strong>Handling multi-threading:</strong> Each client connection is handled by a separate thread, requiring proper synchronization to prevent concurrent access issues.</li>
+  <li><strong>Managing client disconnections:</strong> Ensuring that disconnected clients are removed from the active list to avoid sending messages to inactive connections.</li>
+</ul>
 
-Uruchomienie klienta:
-W nowym terminalu (lub na innej maszynie) przejdź do katalogu projektu.
+<h2 style="font-size:1.5em; font-weight:bold;">Threads and Their Roles</h2>
+<ul>
+  <li><strong>On the Server:</strong> For each connected client, a dedicated thread (using the <code>receive_message</code> function in <code>server.py</code>) manages communication.</li>
+  <li><strong>On the Client:</strong> The function <code>talk_to_server</code> in <code>client.py</code> starts a separate thread to listen for messages from the server, enabling simultaneous message sending and receiving via the GUI.</li>
+</ul>
 
-Uruchom klienta z interfejsem graficznym:
-python client.py
-
-Po uruchomieniu pojawi się ekran logowania – wpisz nazwę użytkownika, a następnie rozpocznij komunikację.
-
-
-Opis problemów
-Projekt rozwiązuje klasyczny problem komunikacji między procesami w środowisku wielowątkowym. Główne wyzwania to:
-
-Synchronizacja dostępu do wspólnych zasobów: W obliczu wielu jednoczesnych połączeń konieczne jest zapewnienie spójności danych, takich jak lista aktywnych klientów czy historia czatu.
-
-Obsługa wielowątkowości: Każde nowe połączenie klienta jest obsługiwane przez osobny wątek, co wymaga zastosowania mechanizmów synchronizacji, aby uniknąć błędów przy jednoczesnym dostępie do danych.
-
-Zarządzanie rozłączaniem klientów: System musi poprawnie usuwać rozłączonych klientów, aby zapobiec wysyłaniu wiadomości do nieaktywnych połączeń.
-
-Wątki i ich funkcje
-Na serwerze:
-
-Dla każdego klienta tworzony jest osobny wątek (funkcja receive_message w server.py), który obsługuje komunikację z danym klientem.
-
-Na kliencie:
-
-Połączenie z serwerem inicjuje wątek nasłuchujący wiadomości (funkcja talk_to_server w client.py), dzięki czemu klient może równocześnie odbierać wiadomości i wysyłać je przez GUI.
-
-Sekcje krytyczne i rozwiązania
-Aby zapewnić poprawne działanie aplikacji w środowisku wielowątkowym, zastosowano mechanizmy synchronizacji:
-
-Lista klientów (client_sockets):
-
-Krytyczna sekcja: Modyfikacja listy aktywnych połączeń.
-
-Rozwiązanie: Użycie locka client_sockets_lock, który gwarantuje, że tylko jeden wątek na raz może modyfikować listę klientów.
-
-Historia czatu (chat_history):
-
-Krytyczna sekcja: Aktualizacja i odczyt historii wiadomości.
-
-Rozwiązanie: Użycie locka chat_history_lock, który zabezpiecza operacje na historii czatu przed jednoczesnym dostępem wielu wątków.
-
-Dzięki tym rozwiązaniom projekt unika problemów związanych z wyścigami (race conditions) i zapewnia spójność oraz poprawność przesyłanych danych.
-
+<h2 style="font-size:1.5em; font-weight:bold;">Critical Sections and Their Handling</h2>
+<ul>
+  <li><strong>Client List (<code>client_sockets</code>):</strong>
+    <ul>
+      <li><em>Critical Section:</em> Modifying the list of active connections.</li>
+      <li><em>Solution:</em> A lock (<code>client_sockets_lock</code>) ensures that only one thread can modify the client list at a time.</li>
+    </ul>
+  </li>
+  <li><strong>Chat History (<code>chat_history</code>):</strong>
+    <ul>
+      <li><em>Critical Section:</em> Updating and reading the chat history.</li>
+      <li><em>Solution:</em> A lock (<code>chat_history_lock</code>) protects the chat history against simultaneous access from multiple threads.</li>
+    </ul>
+  </li>
+</ul>
